@@ -1,0 +1,70 @@
+i-mscp-bot - A bot for IRC that answer to some queries
+
+I. Introduction
+~~~~~~~~~~~~~~~
+
+The i-mscp-bot is able to join one or more IRC channels and listen to them. Then, the
+user can query the bot about any ticket or changeset from Trac.
+
+For now, the bot is able to answer two queries type:
+
+1. Tickets:
+
+If you type '#60' on IRC where 60 is the ticket number, then the bot will answer by
+providing some information about the ticket such as the summary, the owner, reporter
+
+Also, if you type '#last' , the bot will answer by providing same information but for
+the last ticket.
+
+2. Changeset:
+
+If you type 'r4600' on IRC where 4600 is a specific revision, the bot will answer by
+providing the link to the changeset. Also if you type 'rlast' the link to the last
+changeset will be returned by the bot.
+
+II. Requirements
+~~~~~~~~~~~~~~~~
+
+- PHP >= 5.2
+- PHP Curl extension
+
+III. Installation instructions (Debian >= Squeeze)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Getting latest version:
+
+ # cd /usr/local/src
+ # svn co https://i-mscp.svn.sourceforge.net/svnroot/i-mscp/branches/i-mscp-bot
+
+2. Installing bot libraries:
+
+ # mkdir -p /usr/local/lib/iMSCP
+ # cp -r ./i-mscp-bot/library /usr/local/lib/iMSCP
+
+3. Installing the bot:
+
+ # cp ./imscp-bot/i-mscp-bot /usr/local/bin
+ # chmod a+x /usr/local/bin/i-mscp-bot
+
+4. Makin the bot a daemon:
+
+ # mkdir -p /usr/local/etc/init.d
+ # cp /imscp-bot/init.d/i-mscp-bot /usr/local/etc/init.d
+ # ln -s /usr/local/etc/init.d/i-mscp-bot /etc/init.d/i-mscp-bot
+ # insserv /etc/init.d/i-mscp-bot
+
+5. Stating the bot
+ # /etc/init.d/i-mscp-bot start
+
+IV. De-installation instructions(Debian >= Squeeze)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ # /etc/init.d/i-mscp-bot stop
+ # rm -rf /usr/local/lib/iMSCP
+ # rm /usr/local/bin/i-mscp-bot
+ # insserv -r /etc/init.d/i-mscp-bot
+ # rm {/etc/init.d/i-mscp-bot,/usr/local/etc/init.d/i-mscp-bot}
+
+For further help, you can join us on our forum at http://forum.i-mscp.net.
+
+ 
