@@ -70,7 +70,7 @@ class iMSCP_Bot_Trac_Queries
      */
     public function queriesHandler($ircHandler, $ircData)
     {
-        if (preg_match('/(?:\s|^)(r|#)([0-9]+|last)(?:\s\b|$)/', $ircData->message, $match)) {
+        if (preg_match('/(?:\s|^)(r|#)([0-9]+|last)(?:\s.*|$)/', $ircData->message, $match)) {
             if ($match[1] == '#') {
                 if ($match[2] == 'last') {
                     $ticketNumber = $this->fetchLastTicketNumber($ircHandler, $ircData);
