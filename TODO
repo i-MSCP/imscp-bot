@@ -1,1 +1,2 @@
 - Make bot configurable via configuration file
+- Doesn't run daemon as root (Security issue)

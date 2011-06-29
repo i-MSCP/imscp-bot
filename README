@@ -4,9 +4,9 @@ I. Introduction
 ~~~~~~~~~~~~~~~
 
 The i-mscp-bot is able to join one or more IRC channels and listen to them. Then, the
-user can query the bot about any ticket or changeset from Trac.
+connected users can query the bot about any ticket or changeset from Trac.
 
-For now, the bot is able to answer two queries type:
+For now, the bot is able to answer two queries:
 
 1. Tickets:
 
@@ -39,24 +39,24 @@ III. Installation instructions (Debian >= Squeeze)
 2. Installing bot libraries:
 
  # mkdir -p /usr/local/lib/iMSCP
- # cp -r ./i-mscp-bot/library /usr/local/lib/iMSCP
+ # cp -R ./i-mscp-bot/library /usr/local/lib/iMSCP
 
 3. Installing the bot:
 
  # cp ./imscp-bot/i-mscp-bot /usr/local/bin
  # chmod a+x /usr/local/bin/i-mscp-bot
 
-4. Makin the bot a daemon:
+4. Making the bot a daemon:
 
  # mkdir -p /usr/local/etc/init.d
- # cp /imscp-bot/init.d/i-mscp-bot /usr/local/etc/init.d
+ # cp ./imscp-bot/init.d/i-mscp-bot /usr/local/etc/init.d
  # ln -s /usr/local/etc/init.d/i-mscp-bot /etc/init.d/i-mscp-bot
  # insserv /etc/init.d/i-mscp-bot
 
-5. Stating the bot
+5. Starting the bot
  # /etc/init.d/i-mscp-bot start
 
-IV. De-installation instructions(Debian >= Squeeze)
+IV. De-installation instructions (Debian >= Squeeze)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  # /etc/init.d/i-mscp-bot stop
