@@ -76,6 +76,7 @@ $smartIrc->setCtcpVersion(BOT_DESCRIPTION . ' v' . BOT_VERSION);
 $smartIrc->setSenddelay(0);
 $smartIrc->setChannelSyncing(true);
 $smartIrc->setReconnectdelay(500);
+$smartIrc->setRunAsDaemon(true);
 
 // Include library to Irc Queries
 require_once 'iMSCP/Bot/Trac/Queries.php';
