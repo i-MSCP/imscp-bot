@@ -263,8 +263,4 @@ class iMSCP_Bot_Trac_Queries
 
         return $ticket_data;
     }
-
-    public function antiKick() {
-        
-    }
 }
