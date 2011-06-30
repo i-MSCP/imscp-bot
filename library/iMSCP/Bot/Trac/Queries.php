@@ -194,7 +194,11 @@ class iMSCP_Bot_Trac_Queries
                 $answer = $ircData->nick . ': Sorry, no revison found';
             }
         } else {
-                $answer = $ircData->nick . ": Sorry, an error occurred - HTTP status {$response['code']}";
+                if($response['code'] == 0) {
+                    $answer = $ircData->nick . ": Sorry, the server does not respond fast enough (TIMEOUT)";
+                } else {
+                    $answer = $ircData->nick . ": Sorry, an error occurred - HTTP status {$response['code']}";
+                }
         }
 
         $ircHandler->message(SMARTIRC_TYPE_CHANNEL, $ircData->channel, $answer);
@@ -213,6 +217,7 @@ class iMSCP_Bot_Trac_Queries
 
         curl_setopt_array($curlSession,
                           array(
+                               CURLOPT_TIMEOUT => 5,
                                CURLOPT_RETURNTRANSFER => true,
                                CURLOPT_FOLLOWLOCATION => true,
                                CURLOPT_MAXREDIRS => 5,
@@ -257,5 +262,9 @@ class iMSCP_Bot_Trac_Queries
         }
 
         return $ticket_data;
+    }
+
+    public function antiKick() {
+        
     }
 }

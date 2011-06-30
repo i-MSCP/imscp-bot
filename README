@@ -31,40 +31,43 @@ II. Requirements
 III. Installation instructions (Debian >= Squeeze)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+As root user:
+
 1. Getting latest version:
 
  # cd /usr/local/src
- # svn co https://i-mscp.svn.sourceforge.net/svnroot/i-mscp/branches/i-mscp-bot
+ # svn export https://i-mscp.svn.sourceforge.net/svnroot/i-mscp/branches/i-mscp-bot
 
-2. Installing bot libraries:
+2. Installing libraries:
 
  # mkdir -p /usr/local/lib/iMSCP
  # cp -R ./i-mscp-bot/library /usr/local/lib/iMSCP
 
 3. Installing the bot:
 
- # cp ./imscp-bot/i-mscp-bot /usr/local/bin
+ # cp ./i-mscp-bot/i-mscp-bot /usr/local/bin
  # chmod a+x /usr/local/bin/i-mscp-bot
 
-4. Making the bot a daemon:
+4. Make the bot a daemon:
 
  # mkdir -p /usr/local/etc/init.d
- # cp ./imscp-bot/init.d/i-mscp-bot /usr/local/etc/init.d
+ # cp ./i-mscp-bot/init.d/i-mscp-bot /usr/local/etc/init.d
+ # chmod a+x /usr/local/etc/init.d/i-mscp-bot
  # ln -s /usr/local/etc/init.d/i-mscp-bot /etc/init.d/i-mscp-bot
  # insserv /etc/init.d/i-mscp-bot
 
 5. Starting the bot
  # /etc/init.d/i-mscp-bot start
 
-IV. De-installation instructions (Debian >= Squeeze)
+IV.  Uninstall intructions (Debian >= Squeeze)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+As root user:
+
  # /etc/init.d/i-mscp-bot stop
- # rm -rf /usr/local/lib/iMSCP
+ # rm -Rf /usr/local/lib/iMSCP
  # rm /usr/local/bin/i-mscp-bot
  # insserv -r /etc/init.d/i-mscp-bot
  # rm {/etc/init.d/i-mscp-bot,/usr/local/etc/init.d/i-mscp-bot}
 
-For further help, you can join us on our forum at http://forum.i-mscp.net.
-
- 
+For further help, you can join us on our forum at http://forum.i-mscp.net

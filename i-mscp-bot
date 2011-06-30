@@ -58,12 +58,30 @@ defined('ROOT_PATH') || define('ROOT_PATH', realpath(dirname(__FILE__)));
 
 //  Sets include_path
 set_include_path(implode(PATH_SEPARATOR, array(
-                                              '/usr/local/iMSCP/library',
-                                              '/usr/local/iMSCP/library/vendor/pear',
+                                              '/usr/local/lib/iMSCP/library',
+                                              '/usr/local/lib/iMSCP/library/vendor/pear',
                                               get_include_path())));
 
 if (!require_once( 'Net/SmartIRC.php')) {
 	die('Net_SmartIRC pear package not found. Please install it and restart the bot.');
+}
+
+// Temporary fix to prevent kick
+class nokick
+{
+    /**
+     *
+     * @param  Net_SmartIRC_messagehandler $ircHandler
+     * @param  Net_SmartIRC_data $ircData Irc Data
+     * @return void
+     */
+    public function join($ircHandler, $ircData)
+    {
+        $ircHandler->join(array('#i-mscp', '#i-mscp-dev'));
+        $ircHandler->message(
+            SMARTIRC_TYPE_CHANNEL, $ircData->channel,
+            $ircData->nick . ": You are happy? Stop to play now...");
+    }
 }
 
 // Configure the bot
@@ -75,19 +93,23 @@ $smartIrc->setUseSockets(true);
 $smartIrc->setCtcpVersion(BOT_DESCRIPTION . ' v' . BOT_VERSION);
 $smartIrc->setSenddelay(0);
 $smartIrc->setChannelSyncing(true);
-$smartIrc->setReconnectdelay(500);
-$smartIrc->setRunAsDaemon(true);
+$smartIrc->setUserSyncing(true);
+$smartIrc->setReconnectdelay(250);
 
 // Include library to Irc Queries
 require_once 'iMSCP/Bot/Trac/Queries.php';
-$queriesHandler = new iMSCP_Bot_Trac_Queries();
 
+// Handler to answer queries
 $smartIrc->registerActionhandler(
-    SMARTIRC_TYPE_CHANNEL, '/.*/i', $queriesHandler, 'querieshandler');
+    SMARTIRC_TYPE_CHANNEL, '/.*/i', new iMSCP_Bot_Trac_Queries(), 'querieshandler');
+
+// Handler to rejoin the channel on kick
+$smartIrc->registerActionhandler(SMARTIRC_TYPE_KICK, '', new nokick(), 'join');
 
 // Connection, login, join...
 $smartIrc->connect(IRC_HOSTNAME, IRC_PORT);
 $smartIrc->login(IRC_NICKNAME, IRC_REALNAME, 0, IRC_USERNAME, IRC_PASSWORD);
+sleep(3);
 $smartIrc->join($ircChannelsToListenOn);
 $smartIrc->listen(); // Entering in loop here
 $smartIrc->disconnect();
