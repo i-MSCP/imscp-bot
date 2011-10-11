@@ -38,6 +38,13 @@ class iMSCP_Bot_Trac_Queries
      * @var string
      */
     protected $tracUrl = 'http://trac.i-mscp.net';
+    
+    /**
+     * Trac repository to query for specific changesets.
+     * 
+     * @var string
+     */
+    protected $tracRepo = 'imscp';
 
     /**
      * Constructor.
@@ -60,6 +67,16 @@ class iMSCP_Bot_Trac_Queries
     {
         $this->tracUrl = (string)$url;
     }
+    
+    /**
+     * Sets Trac Repo to query for specific changesets
+     * 
+     * @param string $repo Repository
+     * @return void
+     */
+    public function setTracRepo($repo) {
+        $this->tracRepo = (string)$repo;
+    }
 
     /**
      * Queries Handler.
@@ -70,21 +87,22 @@ class iMSCP_Bot_Trac_Queries
      */
     public function queriesHandler($ircHandler, $ircData)
     {
-        if (preg_match('/(?:\s|^)(r|#)([0-9]+|last)(?:\s.*|$)/', $ircData->message, $match)) {
-            if ($match[1] == '#') {
-                if ($match[2] == 'last') {
-                    $ticketNumber = $this->fetchLastTicketNumber($ircHandler, $ircData);
-                    if ($ticketNumber == -1) {
-                        return;
-                    }
-                } else {
-                    $ticketNumber = $match[2];
+        // Ticket Check
+        if (preg_match('/(?:\s|^)#([0-9]+|last)(?:\s.*|$)/', $ircData->message, $match)) {
+            if ($match[1] == 'last') {
+                $ticketNumber = $this->fetchLastTicketNumber($ircHandler, $ircData);
+                if ($ticketNumber == -1) {
+                    return;
                 }
-
-                $this->_fetchTicket($ticketNumber, $ircHandler, $ircData);
             } else {
-                $this->_fetchChangeset($match[2], $ircHandler, $ircData);
+                $ticketNumber = $match[1];
             }
+
+            $this->_fetchTicket($ticketNumber, $ircHandler, $ircData);
+        } // elseif below!
+        // Revision check
+        elseif (preg_match('/(?:\s|^)r([0-9a-z]{7}|last)(?:\s.*|$)/', $ircData->message, $match)) {
+            $this->_fetchChangeset($match[1], $ircHandler, $ircData);
         }
     }
 
@@ -177,22 +195,34 @@ class iMSCP_Bot_Trac_Queries
             $response = $this->_httpQuery(
                 $this->tracUrl . '/timeline?changeset=on&max=1&format=rss');
         } else {
-            $response = $this->_httpQuery($this->tracUrl . '/changeset/' . $revision, 'head');
+            $query = $this->tracUrl . '/changeset/' . $revision . '/'. $this->tracRepo;
+            $response = $this->_httpQuery($query, 'head');
         }
 
         if ($response['code'] == 200) {
             if ($revision != 'last') {
                 // Small workaround to check changeset existence with HTTP head method
                 if (preg_match('/ETag:/', $response['body'])) {
-                    $answer = $ircData->nick . ': ' . $this->tracUrl . '/changeset/' . $revision;
+                    $answer = $ircData->nick . ': ' . $this->tracUrl . '/changeset/' . $revision. '/'.$this->tracRepo;
                 } else {
-                    $answer = $ircData->nick . ": Sorry, revison $revision does not exist";
+                    // This only happens when working with subversion revisions, with git revisions, a 404 will be returned.
+                    // See below for that.
+                    $answer = $ircData->nick . ": Sorry, revison $revision does not exist in reposiory ".$this->tracRepo;
                 }
             } elseif (preg_match_all('%<link>([^<]+)</link>%', $response['body'], $links, PREG_SET_ORDER)) {
-                $answer = $ircData->nick . ': ' . $links[1][1];
+                // If there is an image defined in trac for the RSS, the second <link></link> element will be that.
+                //  so, we need to grab the third link if there is one.
+                if (isset($links[2]) && isset($links[2][1]))
+                    $link = $links[2][1];
+                else
+                    $link = $links[2][1];
+                $answer = $ircData->nick . ': ' . $link;
             } else {
-                $answer = $ircData->nick . ': Sorry, no revison found';
+                $answer = $ircData->nick . ': Sorry, no revison found in repository '.$this->tracRepo;
             }
+        } elseif ($response['code'] == 404) {
+            // This happens when a Git revision isn't found.
+            $answer = $ircData->nick . ': Sorry, revison '.$revision.' does not exist in repository '.$this->tracRepo;
         } else {
                 if($response['code'] == 0) {
                     $answer = $ircData->nick . ": Sorry, the server does not respond fast enough (TIMEOUT)";
