@@ -37,7 +37,7 @@ class iMSCP_Bot_Trac_Queries
      *
      * @var string
      */
-    protected $tracUrl = 'http://sourceforge.net/apps/trac/i-mscp';
+    protected $tracUrl = 'http://trac.i-mscp.net';
 
     /**
      * Constructor.
