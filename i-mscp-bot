@@ -77,7 +77,7 @@ class nokick
      */
     public function join($ircHandler, $ircData)
     {
-        $ircHandler->join(array('#i-mscp', '#i-mscp-dev'));
+        $ircHandler->join($ircData->channel);
         $ircHandler->message(
             SMARTIRC_TYPE_CHANNEL, $ircData->channel,
             $ircData->nick . ": You are happy? Stop to play now...");
