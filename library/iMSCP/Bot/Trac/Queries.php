@@ -101,7 +101,7 @@ class iMSCP_Bot_Trac_Queries
             $this->_fetchTicket($ticketNumber, $ircHandler, $ircData);
         } // elseif below!
         // Revision check
-        elseif (preg_match('/(?:\s|^)r([0-9a-z]{7}|last)(?:\s.*|$)/', $ircData->message, $match)) {
+        elseif (preg_match('/(?:\s|^)\!([0-9a-z]{7,40}|last)(?:\s.*|$)/', $ircData->message, $match)) {
             $this->_fetchChangeset($match[1], $ircHandler, $ircData);
         }
     }
