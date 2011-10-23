@@ -77,8 +77,8 @@ class nokick
      */
     public function join($ircHandler, $ircData)
     {
-	global $ircChannelsToListenOn;
-	foreach ($ircChannelsToListenOn as $channel) {
+        global $ircChannelsToListenOn;
+        foreach ($ircChannelsToListenOn as $channel) {
             $ircHandler->join($channel);
         }
         $ircHandler->message(
