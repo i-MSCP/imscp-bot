@@ -77,7 +77,10 @@ class nokick
      */
     public function join($ircHandler, $ircData)
     {
-        $ircHandler->join($ircData->channel);
+	global $ircChannelsToListenOn;
+	foreach ($ircChannelsToListenOn as $channel) {
+            $ircHandler->join($channel);
+        }
         $ircHandler->message(
             SMARTIRC_TYPE_CHANNEL, $ircData->channel,
             $ircData->nick . ": You are happy? Stop to play now...");
